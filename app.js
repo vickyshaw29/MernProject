@@ -23,19 +23,9 @@ const app = express()
 // if (process.env.MODE === "DEVELOPMENT") {
 // 	app.use(morgan("dev"))
 // }
-if(process.env.NODE_ENV==='production'){
-    app.use(express.static(path.join(__dirname,'/build')))
-    app.get('*',(req,res)=>{
-        res.sendFile(path.resolve(__dirname, 'build','index.html'))
-    }) 
-}else{
-    app.get('/',(req,res)=>{
-        res.send('API is running')
-    })
-}
 
 app.use(express.json())//body parser for json
-app.use(cors()) //CORS for development
+// app.use(cors()) //CORS for development
 // app.use(expressValidator())
 
 passportUtil(passport)
@@ -57,7 +47,16 @@ const dirname = path.resolve()
 // 		res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
 // 	})
 // }
-
+if(process.env.NODE_ENV==='production'){
+    app.use(express.static(path.join(__dirname,'/build')))
+    app.get('*',(req,res)=>{
+        res.sendFile(path.resolve(__dirname, 'build','index.html'))
+    }) 
+}else{
+    app.get('/',(req,res)=>{
+        res.send('API is running')
+    })
+}
 
 mongoose.connect(process.env.MONGODB_URL,{useNewUrlParser:true,useUnifiedTopology:true})
 .then(()=>app.listen(process.env.PORT,()=>console.log('running on port 8000')))
